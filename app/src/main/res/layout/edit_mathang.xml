@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:backgroundTint="#FFFFFF"
+    android:padding="13dp"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="13dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa thông tin mặt hàng"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/etEditMaMH"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="Mã mặt hàng"
+                android:textSize="15sp" />
+            <ImageButton
+                android:id="@+id/btneditScan"
+                android:layout_width="150px"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_qrcodesearch" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/etEditTenMH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Tên mặt hàng"
+            android:textSize="15sp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Đơn giá"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:id="@+id/etEditDonGia"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Đơn vị tính"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:id="@+id/etEditDvt"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Số lượng"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:id="@+id/etEditSoLuong"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Xuất xứ"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:id="@+id/etEditXuatXu"
+            />
+
+        <Spinner
+            android:id="@+id/snEditNCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="Nhà cung cấp"
+            android:textSize="15sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mô tả"
+            android:textSize="15sp"
+            android:layout_margin="10dp"
+            android:id="@+id/etEditMoTa"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Chỉnh sửa"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:textColor="#ffffff"
+                android:id="@+id/btnEditMH"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Hủy"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textColor="#ffffff"
+                android:id="@+id/btnCancelEditMH"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

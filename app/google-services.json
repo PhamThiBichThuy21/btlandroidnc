@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "155060990643",
+    "firebase_url": "https://scanner-faeef-default-rtdb.firebaseio.com",
+    "project_id": "scanner-faeef",
+    "storage_bucket": "scanner-faeef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155060990643:android:f97314d71090f318e1b6c6",
+        "android_client_info": {
+          "package_name": "com.example.btlandroidnc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "155060990643-a6vuap306lpt7f0f9vvnt41hnus1djul.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-I63hpzUNxXzg-uNSwGib43oOUdzIJKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "155060990643-a6vuap306lpt7f0f9vvnt41hnus1djul.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
