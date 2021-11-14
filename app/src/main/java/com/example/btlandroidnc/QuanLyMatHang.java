@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -49,6 +50,11 @@ public class QuanLyMatHang extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_mat_hang);
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         listViewMatHang = (SwipeMenuListView) findViewById(R.id.danhsachmathang);
         lstmathang = new ArrayList<QuanLyMatHangClass>();
         adapter = new QuanLyMatHangAdapter(QuanLyMatHang.this, lstmathang);
@@ -107,7 +113,7 @@ public class QuanLyMatHang extends AppCompatActivity {
                 return false;
             }
         });
-        datamathang.child("MatHang").addListenerForSingleValueEvent(new ValueEventListener() {
+        datamathang.child("MatHang").orderByChild("tenMH").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 lstmathang.clear();

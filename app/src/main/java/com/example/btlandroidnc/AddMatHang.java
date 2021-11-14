@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,7 +36,7 @@ import java.util.ArrayList;
 
 import static androidx.constraintlayout.widget.StateSet.TAG;
 
-public class AddMatHang extends AppCompatActivity {
+public class AddMatHang extends AppCompatActivity{
     private static final int REQUEST_CODE_SCAN = 0X01;
     public static final int DEFAULT_VIEW = 0x22;
     private ArrayList<QuanLyMatHangClass> lstmathang;
@@ -48,13 +50,35 @@ public class AddMatHang extends AppCompatActivity {
     String TenNCC = null;
     Button btnAdd, btnCancel;
     HmsScanAnalyzerOptions options;
+    private int check=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_mat_hang);
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         datamathang = FirebaseDatabase.getInstance().getReference();
         lstmathang = new ArrayList<QuanLyMatHangClass>();
         adapter = new QuanLyMatHangAdapter(AddMatHang.this, lstmathang);
+        datamathang.child("MatHang").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lstmathang.clear();
+                for (DataSnapshot unit : dataSnapshot.getChildren()) {
+                    QuanLyMatHangClass lstMH = unit.getValue(QuanLyMatHangClass.class);
+                    lstmathang.add(lstMH);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Toast.makeText(ThongKeActivity.this, "Đã xảy ra lỗi vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
         getView();
         showDataSpinner();
             arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,arrayList);
@@ -87,43 +111,54 @@ public class AddMatHang extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // add data to firebase
-                QuanLyMatHangClass qlMH = new QuanLyMatHangClass(etAddMaMH.getText().toString(),etAddTenMH.getText().toString(),
-                        etAddDvt.getText().toString(),etAddXuatXu.getText().toString(),etAddMoTa.getText().toString(),TenNCC,
-                        Float.parseFloat(etAddDonGia.getText().toString()), Float.parseFloat(etAddSoLuong.getText().toString()));
-                datamathang.child("MatHang").child(etAddMaMH.getText().toString()).setValue(qlMH);
-                lstmathang.add(qlMH);
-                adapter.notifyDataSetChanged();
+                if(etAddMaMH.getText().toString().equals("")&&etAddTenMH.getText().toString().equals("")){
+                    Toast.makeText(AddMatHang.this, "Nhập đầy đủ thông tin trước khi lưu", Toast.LENGTH_SHORT).show();
+                }else{
+                    QuanLyMatHangClass qlMH = new QuanLyMatHangClass(etAddMaMH.getText().toString(),etAddTenMH.getText().toString(),
+                            etAddDvt.getText().toString(),etAddXuatXu.getText().toString(),etAddMoTa.getText().toString(),TenNCC,
+                            Float.parseFloat(etAddDonGia.getText().toString()), Float.parseFloat(etAddSoLuong.getText().toString()));
+                    datamathang.child("MatHang").child(etAddMaMH.getText().toString()).setValue(qlMH);
+                    lstmathang.add(qlMH);
+                    adapter.notifyDataSetChanged();
 
-                datamathang.child("MatHang").child(etAddMaMH.getText().toString()).addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Toast.makeText(AddMatHang.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(AddMatHang.this, QuanLyMatHang.class);
-                        startActivity(intent);
-                    }
+                    datamathang.child("MatHang").child(etAddMaMH.getText().toString()).addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Toast.makeText(AddMatHang.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(AddMatHang.this, QuanLyMatHang.class);
+                            startActivity(intent);
+                        }
 
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Toast.makeText(AddMatHang.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(AddMatHang.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home: onBackPressed(); return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
     private void scanCode(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -157,8 +192,19 @@ public class AddMatHang extends AppCompatActivity {
             //result u will get
             if (obj instanceof HmsScan) {
                 if (!TextUtils.isEmpty(((HmsScan) obj).getOriginalValue())) {
+                    for(int i = 0; lstmathang.size() > i; i++)
+                    {
+                        if(lstmathang.get(i).MaMH.equals(((HmsScan) obj).getOriginalValue()))
+                        {
+                            Toast.makeText(this, "Mặt hàng đã tồn tại ", Toast.LENGTH_SHORT).show();
+                            check = 1;
+                        }
+                    }
+                    if(check==0){
+                        etAddMaMH.setText(((HmsScan) obj).getOriginalValue());
+                    }
                     //Toast.makeText(this, ((HmsScan) obj).getOriginalValue(), Toast.LENGTH_SHORT).show();
-                    etAddMaMH.setText(((HmsScan) obj).getOriginalValue());
+
                     //AddMatHang.this.finish();
                 }
                 //return;

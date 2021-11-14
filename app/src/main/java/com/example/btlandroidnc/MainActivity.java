@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     @Override
@@ -51,6 +52,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
         Toast.makeText(this, "Quản Lý nhà cung cấp", Toast.LENGTH_SHORT).show();
     }
+    public void gotocheck(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, ScannerQRCode.class);
+        startActivity(intent);
+        Toast.makeText(this, "Thêm mặt hàng", Toast.LENGTH_SHORT).show();
+    }
+    public void gotoBaoCao(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, BaoCaoActivity.class);
+        startActivity(intent);
+        Toast.makeText(this, "Báo cáo thống kê", Toast.LENGTH_SHORT).show();
+    }
+    public void logOut(View view)
+    {
+        FirebaseAuth.getInstance().signOut();
+        Intent goToLogin = new Intent(MainActivity.this,LoginActivity.class);
+        startActivity(goToLogin);
+        Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
+    }
+    public void gotoInfo(View view)
+    {
+        Intent intent = new Intent(MainActivity.this, InforAppActivity.class);
+        startActivity(intent);
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -61,6 +86,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
         }else if (id == R.id.nav_mathang) {
             Intent intent = new Intent(MainActivity.this, QuanLyMatHang.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_scanner) {
+            Intent intent = new Intent(MainActivity.this, ScannerQRCode.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_baocao) {
+            Intent intent = new Intent(MainActivity.this, BaoCaoActivity.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent goToLogin = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(goToLogin);
+            Toast.makeText(this, "Đăng xuất", Toast.LENGTH_SHORT).show();
+        }else if (id == R.id.nav_thongtincanhan) {
+            Intent intent = new Intent(MainActivity.this, InforAppActivity.class);
             startActivity(intent);
         }
         return false;

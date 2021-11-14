@@ -21,6 +21,10 @@
             android:id="@+id/nav_ncc"
             android:icon="@drawable/ic_people_black_24dp"
             android:title="Danh sách nhà cung cấp" />
+        <item
+            android:id="@+id/nav_baocao"
+            android:icon="@drawable/ic_baseline_pie_chart"
+            android:title="Báo cáo thống kê" />
 
     </group>
 
@@ -30,10 +34,10 @@
                 android:id="@+id/nav_thongtincanhan"
                 android:icon="@drawable/icons8_male_user_100"
                 android:title="Thông tin ứng dụng" />
-            <item
+            <!--<item
                 android:id="@+id/nav_doimatkhau"
                 android:icon="@drawable/ic_baseline_create_24"
-                android:title="Đổi mật khẩu" />
+                android:title="Đổi mật khẩu" />-->
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_menu_send"

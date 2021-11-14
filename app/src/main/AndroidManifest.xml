@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.btlandroidnc" >
+    package="com.example.btlandroidnc">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -21,13 +21,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".InforAppActivity"></activity>
+        <activity android:name=".BaoCaoActivity" />
+        <activity android:name=".ScannerQRCode" />
+        <activity android:name=".QuanLyMatHang" />
         <activity android:name=".QuanLyNCC" />
         <activity android:name=".AddMatHang" />
-        <activity
-            android:name=".QuanLyMatHang"
-            android:label="@string/title_activity_quan_ly_mat_hang"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.huawei.hms.client.channel.androidMarket"
@@ -39,7 +39,7 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

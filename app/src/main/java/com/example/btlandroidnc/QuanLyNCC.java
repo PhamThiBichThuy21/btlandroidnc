@@ -3,6 +3,7 @@ package com.example.btlandroidnc;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,16 +30,24 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static androidx.constraintlayout.widget.StateSet.TAG;
+
 public class QuanLyNCC extends AppCompatActivity {
     private ArrayList<QuanLyNCCClass> lstncc;
     private DatabaseReference datancc;
     private QuanLyNCCAdapter adapter;
     private QuanLyNCCClass QLNCC;
     private SwipeMenuListView listViewNCC;
+    private int check=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_n_c_c);
+
+        ActionBar actionBar = getSupportActionBar();
+        // showing the back button in action bar
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         listViewNCC = (SwipeMenuListView) findViewById(R.id.danhsachncc);
         lstncc = new ArrayList<QuanLyNCCClass>();
         adapter = new QuanLyNCCAdapter(QuanLyNCC.this, lstncc);
@@ -144,40 +154,60 @@ public class QuanLyNCC extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // add data to firebase
-                        QuanLyNCCClass qlncc = new QuanLyNCCClass(etMaNCC.getText().toString(),etTenNCC.getText().toString(),etDiaChiNCC.getText().toString(),etPhone.getText().toString());
-                        datancc.child("NCC").child(etMaNCC.getText().toString()).child("MaNCC").setValue(etMaNCC.getText().toString());
-                        datancc.child("NCC").child(etMaNCC.getText().toString()).child("TenNCC").setValue(etTenNCC.getText().toString());
-                        datancc.child("NCC").child(etMaNCC.getText().toString()).child("DiaChi").setValue(etDiaChiNCC.getText().toString());
-                        datancc.child("NCC").child(etMaNCC.getText().toString()).child("Sdt").setValue(etPhone.getText().toString());
-                        lstncc.add(qlncc);
-                        adapter.notifyDataSetChanged();
-                        datancc.child("NCC").child(etMaNCC.getText().toString()).addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Toast.makeText(QuanLyNCC.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                        check=0;
+                        if(etMaNCC.getText().toString().equals("")&&etTenNCC.getText().toString().equals("")){
+                            Toast.makeText(QuanLyNCC.this, "Nhập đầy đủ thông tin trước khi lưu", Toast.LENGTH_SHORT).show();
+                        }else{
+                            for(int i = 0; lstncc.size() > i; i++)
+                            {
+                                if(lstncc.get(i).MaNCC.equals(etMaNCC.getText().toString()))
+                                {
+                                    Toast.makeText(QuanLyNCC.this, "Nhà cung cấp đã tồn tại ", Toast.LENGTH_SHORT).show();
+                                    check = 1;
+                                }
+                                if(lstncc.get(i).Sdt.equals(etPhone.getText().toString())){
+                                    Toast.makeText(QuanLyNCC.this, "Số điện thoại đã được sử dụng ", Toast.LENGTH_SHORT).show();
+                                    check = 1;
+                                }
                             }
+                            if(check==0){
+                                Log.d(TAG, "cochayvaoday: "+etMaNCC.getText().toString());
+                                QuanLyNCCClass qlncc = new QuanLyNCCClass(etMaNCC.getText().toString(),etTenNCC.getText().toString(),etDiaChiNCC.getText().toString(),etPhone.getText().toString());
+                                datancc.child("NCC").child(etMaNCC.getText().toString()).child("MaNCC").setValue(etMaNCC.getText().toString());
+                                datancc.child("NCC").child(etMaNCC.getText().toString()).child("TenNCC").setValue(etTenNCC.getText().toString());
+                                datancc.child("NCC").child(etMaNCC.getText().toString()).child("DiaChi").setValue(etDiaChiNCC.getText().toString());
+                                datancc.child("NCC").child(etMaNCC.getText().toString()).child("Sdt").setValue(etPhone.getText().toString());
+                                lstncc.add(qlncc);
+                                adapter.notifyDataSetChanged();
+                                datancc.child("NCC").child(etMaNCC.getText().toString()).addChildEventListener(new ChildEventListener() {
+                                    @Override
+                                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                        Toast.makeText(QuanLyNCC.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                    }
 
-                            @Override
-                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                    @Override
+                                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+                                    }
+
+                                    @Override
+                                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        Toast.makeText(QuanLyNCC.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                alertDialog.dismiss();
                             }
-
-                            @Override
-                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                Toast.makeText(QuanLyNCC.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        alertDialog.dismiss();
+                        }
                     }
                 });
                 alertDialog.show();

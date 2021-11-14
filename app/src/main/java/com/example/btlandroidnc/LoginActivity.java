@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.huawei.hmf.tasks.Task;
 import com.huawei.hms.support.account.AccountAuthManager;
 import com.huawei.hms.support.account.request.AccountAuthParams;
@@ -50,28 +51,24 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
     }
     ActivityResultLauncher<Intent> signInIDResult = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            //xu ly ket qua tra ve khi dang nhap
-            Intent data = result.getData();
-            //id-token signIn
-            Task<AuthAccount> authAccountTask = AccountAuthManager.parseAuthResultFromIntent(data);
-            if(authAccountTask.isSuccessful()){
-                Toast.makeText(LoginActivity.this, "Đăng nhập thành công:", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-            }else {
-                Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-            }
-        }
-    });
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    //xu ly ket qua tra ve khi dang nhap
+                    Intent data = result.getData();
+                    //id-token signIn
+                    Task<AuthAccount> authAccountTask = AccountAuthManager.parseAuthResultFromIntent(data);
+                    if(authAccountTask.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công:", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }else {
+                        Toast.makeText(LoginActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
     private void signInId(){
         authParams = new AccountAuthParamsHelper(AccountAuthParams.DEFAULT_AUTH_REQUEST_PARAM).setIdToken().createParams();
         authService= AccountAuthManager.getService(LoginActivity.this,authParams);
         signInIDResult.launch(authService.getSignInIntent());
-    }
-    public void onLoginClick(View View){
-        startActivity(new Intent(this,RegisterActivity.class));
-        overridePendingTransition(R.anim.slide_in_right,R.anim.stay);
     }
 }

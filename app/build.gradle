@@ -48,6 +48,7 @@ dependencies {
     implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
     implementation 'com.huawei.hms:hwid:6.1.0.302'
     implementation 'com.huawei.hms:scan:2.1.0.300'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
 }
 /*apply plugin: 'com.google.gms.google-services'*/
 apply plugin: 'com.huawei.agconnect'
