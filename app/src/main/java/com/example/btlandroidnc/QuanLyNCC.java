@@ -4,10 +4,12 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ import static androidx.constraintlayout.widget.StateSet.TAG;
 
 public class QuanLyNCC extends AppCompatActivity {
     private ArrayList<QuanLyNCCClass> lstncc;
+    private ArrayList<QuanLyNCCClass> lstnccTK;
     private DatabaseReference datancc;
     private QuanLyNCCAdapter adapter;
     private QuanLyNCCClass QLNCC;
@@ -221,6 +224,40 @@ public class QuanLyNCC extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // Tìm kiếm NCC
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_app, menu);
+        SearchView search = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                for(int i = 0; lstncc.size() > i; i++)
+                {
+                    if(lstncc.get(i).TenNCC.contains(s))
+                    {
+                        QuanLyNCCClass timNCC = new QuanLyNCCClass (lstncc.get(i).MaNCC,lstncc.get(i).TenNCC,
+                                lstncc.get(i).DiaChi,lstncc.get(i).Sdt);
+                        lstnccTK = new ArrayList<QuanLyNCCClass>();
+                        lstnccTK.add(timNCC);
+                        adapter = new QuanLyNCCAdapter(QuanLyNCC.this, lstnccTK);
+                        listViewNCC.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
     public void deleteNcc(final QuanLyNCCClass lstnhacungcap)
     {
         //Toast.makeText(QuanlyNCCActivity.this, lstnhacungcap.getMaNCC(), Toast.LENGTH_SHORT).show();

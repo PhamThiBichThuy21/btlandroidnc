@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -145,6 +147,40 @@ public class QuanLyMatHang extends AppCompatActivity {
             case android.R.id.home: onBackPressed(); return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    // Tìm kiếm mặt hàng
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_app, menu);
+        SearchView search = (SearchView) menu.findItem(R.id.menuSearch).getActionView();
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                //Log.d("TAG", "showInfoMH: "+lstmathang);
+                for(int i = 0; lstmathang.size() > i; i++)
+                {
+                    if(lstmathang.get(i).TenMH.contains(s))
+                    {
+                        QuanLyMatHangClass timmh = new QuanLyMatHangClass (lstmathang.get(i).MaMH,lstmathang.get(i).TenMH,
+                                lstmathang.get(i).Dvt,lstmathang.get(i).XuatXu,lstmathang.get(i).MoTa,lstmathang.get(i).TenNCC,
+                                lstmathang.get(i).DonGia, lstmathang.get(i).SoLuong);
+                        lstmathangTK = new ArrayList<QuanLyMatHangClass>();
+                        lstmathangTK.add(timmh);
+                        adapter = new QuanLyMatHangAdapter(QuanLyMatHang.this, lstmathangTK);
+                        listViewMatHang.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+
+        });
+        return super.onCreateOptionsMenu(menu);
     }
     public void deleteMH(final QuanLyMatHangClass lstMH)
     {
