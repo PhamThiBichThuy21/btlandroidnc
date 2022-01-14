@@ -1,5 +1,6 @@
 package com.example.btlandroidnc;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -40,8 +41,13 @@ public class QuanLyNCC extends AppCompatActivity {
     private DatabaseReference datancc;
     private QuanLyNCCAdapter adapter;
     private QuanLyNCCClass QLNCC;
+    private DatabaseReference datamathang;
+    private QuanLyMatHangAdapter adaptermh;
+    private QuanLyMatHangClass QLMatHang;
+    private ArrayList<QuanLyMatHangClass> lstmathang;
     private SwipeMenuListView listViewNCC;
     private int check=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +62,26 @@ public class QuanLyNCC extends AppCompatActivity {
         adapter = new QuanLyNCCAdapter(QuanLyNCC.this, lstncc);
         listViewNCC.setAdapter(adapter);
         datancc = FirebaseDatabase.getInstance().getReference();
+        //mathang
+        lstmathang = new ArrayList<QuanLyMatHangClass>();
+        adaptermh = new QuanLyMatHangAdapter(QuanLyNCC.this, lstmathang);
+        datamathang = FirebaseDatabase.getInstance().getReference();
+        datamathang.child("MatHang").orderByChild("tenMH").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lstmathang.clear();
+                for (DataSnapshot unit : dataSnapshot.getChildren()){
+                    QuanLyMatHangClass QLSV = unit.getValue(QuanLyMatHangClass.class);
+                    lstmathang.add(QLSV);
+                }
+                adaptermh.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(QuanLyNCC.this, "Đã xảy ra lỗi vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            }
+        });
         SwipeMenuCreator creator = new SwipeMenuCreator() {
             @Override
             public void create(SwipeMenu menu) {
@@ -260,24 +286,52 @@ public class QuanLyNCC extends AppCompatActivity {
 
     public void deleteNcc(final QuanLyNCCClass lstnhacungcap)
     {
+        int checkmh=0;
         //Toast.makeText(QuanlyNCCActivity.this, lstnhacungcap.getMaNCC(), Toast.LENGTH_SHORT).show();
-        datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("MaNCC").removeValue();
-        datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("TenNCC").removeValue();
-        datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("DiaChi").removeValue();
-        datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("Sdt").removeValue();
-        lstncc.remove(lstnhacungcap);
-        adapter.notifyDataSetChanged();
-        datancc.child("NCC").child(lstnhacungcap.getMaNCC()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Toast.makeText(QuanLyNCC.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+        //Log.d("TAG", "showInfoMHtttt: "+lstmathang);
+        for(int i = 0; lstmathang.size() > i; i++)
+        {
+            //Log.d("TAG", "showInfoMHtttt: "+lstmathang.get(i).TenNCC);
+            if(lstmathang.get(i).TenNCC.equals(lstnhacungcap.TenNCC))
+            {
+                Toast.makeText(this, "Nhà cung cấp này đã có mặt hàng", Toast.LENGTH_SHORT).show();
+                checkmh = 1;
             }
+        }
+        if(checkmh==0){
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("Thông báo!");
+            alertDialog.setMessage("Bạn có muốn xóa nhà cung cấp này không?");
+            alertDialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("MaNCC").removeValue();
+                    datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("TenNCC").removeValue();
+                    datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("DiaChi").removeValue();
+                    datancc.child("NCC").child(lstnhacungcap.getMaNCC()).child("Sdt").removeValue();
+                    lstncc.remove(lstnhacungcap);
+                    adapter.notifyDataSetChanged();
+                    datancc.child("NCC").child(lstnhacungcap.getMaNCC()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Toast.makeText(QuanLyNCC.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(QuanLyNCC.this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
-            }
-        });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(QuanLyNCC.this, "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+            alertDialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            alertDialog.show();
+        }
     }
     public void showDialogEdit(final QuanLyNCCClass lstnhacungcap)
     {

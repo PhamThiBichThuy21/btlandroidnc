@@ -40,6 +40,7 @@ public class AddMatHang extends AppCompatActivity{
     private static final int REQUEST_CODE_SCAN = 0X01;
     public static final int DEFAULT_VIEW = 0x22;
     private ArrayList<QuanLyMatHangClass> lstmathang;
+    private ArrayList<QuanLyMatHangClass> lstmh;
     private DatabaseReference datamathang;
     private QuanLyMatHangAdapter adapter;
     private ArrayList<String> arrayList = new ArrayList<>();
@@ -111,44 +112,101 @@ public class AddMatHang extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 // add data to firebase
-                if(etAddMaMH.getText().toString().equals("")&&etAddTenMH.getText().toString().equals("")){
+                int checkm=0;
+                Float soluong = Float.parseFloat(etAddSoLuong.getText().toString());
+                if(etAddMaMH.getText().toString().equals("")){
                     Toast.makeText(AddMatHang.this, "Nhập đầy đủ thông tin trước khi lưu", Toast.LENGTH_SHORT).show();
                 }else{
-                    QuanLyMatHangClass qlMH = new QuanLyMatHangClass(etAddMaMH.getText().toString(),etAddTenMH.getText().toString(),
-                            etAddDvt.getText().toString(),etAddXuatXu.getText().toString(),etAddMoTa.getText().toString(),TenNCC,
-                            Float.parseFloat(etAddDonGia.getText().toString()), Float.parseFloat(etAddSoLuong.getText().toString()));
-                    datamathang.child("MatHang").child(etAddMaMH.getText().toString()).setValue(qlMH);
-                    lstmathang.add(qlMH);
-                    adapter.notifyDataSetChanged();
-
-                    datamathang.child("MatHang").child(etAddMaMH.getText().toString()).addChildEventListener(new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Toast.makeText(AddMatHang.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(AddMatHang.this, QuanLyMatHang.class);
-                            startActivity(intent);
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    for(int i = 0; lstmathang.size() > i; i++)
+                    {
+                        if(lstmathang.get(i).MaMH.equals(etAddMaMH.getText().toString()))
+                        {
+                            //Log.d("TAG", "soluong: "+soluong);
+                            soluong += lstmathang.get(i).SoLuong;
+                            lstmh = new ArrayList<QuanLyMatHangClass>();
+                            lstmh.add(lstmathang.get(i));
+                            checkm = 1;
 
                         }
+                    }
+                    Log.d("TAG", "soluong: "+soluong);
+                    if(checkm == 1){
+                        datamathang.child("MatHang").child(etAddMaMH.getText().toString()).removeValue();
+                        lstmathang.remove(lstmh);
+                        QuanLyMatHangClass qlMH = new QuanLyMatHangClass(etAddMaMH.getText().toString(),etAddTenMH.getText().toString(),
+                                etAddDvt.getText().toString(),etAddXuatXu.getText().toString(),etAddMoTa.getText().toString(),TenNCC,
+                                Float.parseFloat(etAddDonGia.getText().toString()), soluong);
+                        datamathang.child("MatHang").child(etAddMaMH.getText().toString()).setValue(qlMH);
+                        lstmathang.add(qlMH);
+                        adapter.notifyDataSetChanged();
 
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                        datamathang.child("MatHang").child(etAddMaMH.getText().toString()).addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Toast.makeText(AddMatHang.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(AddMatHang.this, QuanLyMatHang.class);
+                                startActivity(intent);
+                            }
 
-                        }
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            }
 
-                        }
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Toast.makeText(AddMatHang.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(AddMatHang.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    if(checkm==0){
+                        QuanLyMatHangClass qlMH = new QuanLyMatHangClass(etAddMaMH.getText().toString(),etAddTenMH.getText().toString(),
+                                etAddDvt.getText().toString(),etAddXuatXu.getText().toString(),etAddMoTa.getText().toString(),TenNCC,
+                                Float.parseFloat(etAddDonGia.getText().toString()), Float.parseFloat(etAddSoLuong.getText().toString()));
+                        datamathang.child("MatHang").child(etAddMaMH.getText().toString()).setValue(qlMH);
+                        lstmathang.add(qlMH);
+                        adapter.notifyDataSetChanged();
+
+                        datamathang.child("MatHang").child(etAddMaMH.getText().toString()).addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Toast.makeText(AddMatHang.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(AddMatHang.this, QuanLyMatHang.class);
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(AddMatHang.this, "Thêm thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
                 }
             }
         });
@@ -192,12 +250,18 @@ public class AddMatHang extends AppCompatActivity{
             //result u will get
             if (obj instanceof HmsScan) {
                 if (!TextUtils.isEmpty(((HmsScan) obj).getOriginalValue())) {
+                    check = 0;
                     for(int i = 0; lstmathang.size() > i; i++)
                     {
                         if(lstmathang.get(i).MaMH.equals(((HmsScan) obj).getOriginalValue()))
                         {
-                            Toast.makeText(this, "Mặt hàng đã tồn tại ", Toast.LENGTH_SHORT).show();
-                            check = 1;
+                            etAddMaMH.setText(lstmathang.get(i).getMaMH());
+                            etAddTenMH.setText(lstmathang.get(i).getTenMH());
+                            etAddDonGia.setText(lstmathang.get(i).getDonGia().toString());
+                            etAddDvt.setText(lstmathang.get(i).getDvt());
+                            etAddSoLuong.setText(lstmathang.get(i).getSoLuong().toString());
+                            etAddXuatXu.setText(lstmathang.get(i).getXuatXu());
+                            etAddMoTa.setText(lstmathang.get(i).getMoTa());
                         }
                     }
                     if(check==0){
